@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html ng-app="quizApp">
+
+<head>
+    <title>Angular Quiz App</title>
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	
+	<link href="styles/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+	<div class="container">
+		
+
+		<h2>Turtle Facts Quiz</h2>
+        <p>Learn about all the turtles below before you decide to take on the TURTLE QUIZ</p>
+        <hr>
+
+
+	</div>
+	
+
+
+    <div class="container" ng-controller="turtlesController" ng-hide="metricsFactory.quizActive || metricsFactory.resultsActive">
+        
+	
+		
+			
+				<form class="form-inline well well-sm clearfx">
+					<span class="glyphicon glyphicon-search"></span>
+					<input type="text" class="form-control" ng-model="searchFilter">
+
+					<button class="btn btn-warning pull-right" ng-click="metricsFactory.changeState('quiz', true)">Start Quiz</button>
+				</form>
+
+
+	
+
+        <div class="row" >
+            <div class="col-sm-6" ng-repeat="turtle in turtles | filter: searchFilter">
+                <div class="well well-sm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img ng-src={{turtle.image_url}} class="img-responsive img-rounded" width="100%">
+                        </div>
+                        <div class="col-md-6">
+                            <h3>{{turtle.type}} </h3>
+                            <p><strong>Locations: </strong> {{turtle.locations}}</p>
+                            <p><strong>Size: </strong> {{turtle.size}}</p>
+                            <p><strong>Average Life Span: </strong> {{turtle.lifespan}}</p>
+                            <p><strong>Diet: </strong> {{turtle.diet}}</p>
+                            <button data-toggle="modal" data-target="#turtle-info" class="btn btn-primary pull-right" ng-click="changeActiveTurtle(turtle)">Learn More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<div class="modal fade" id="turtle-info" role="dialog">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                
+	                <div class="modal-header">
+	                    <h2>{{activeTurtle.type}}</h2>
+	                </div>
+	                <div class="modal-body">
+	                	<div class="row">
+	                		<div class="col-xs-8 col-xs-offset-2">
+	                			<img ng-src={{activeTurtle.image_url}} class="img-responsive img-rounded" width="100%">
+	                		</div>
+	                		
+	                		<br >
+	                		<br >
+	                		<br >
+
+							<div class="col-xs-12">
+				                <p><strong>Locations: </strong> {{activeTurtle.locations}}</p>
+			                    <p><strong>Size: </strong> {{activeTurtle.size}}</p>
+			                    <p><strong>Average Life Span: </strong> {{activeTurtle.lifespan}}</p>
+			                    <p><strong>Diet: </strong> {{activeTurtle.diet}}</p>
+								<p><strong>Description: </strong> {{activeTurtle.description}}</p>
+							</div>
+	                	</div>
+	                </div>
+	
+					<div class="modal-footer">
+	                	<button class="btn btn-danger" data-dismiss='modal'>Close</button>
+	                </div>
+
+	            </div>
+	        </div>
+	    </div>
+
+    </div>
+
+
+
+    <div class="container" ng-controller="QuizController" ng-show="metricsFactory.quizActive">
+
+		<div class="row">
+			
+						
+			<div class="col-md-8">
+				<h3>Progress</h3>	
+				<span ng-repeat="question in questions" ng-click="setQuizNum($index)">
+					<button class="btn ques_ans-btn glyphicon" ng-class="{'btn-danger':question.selected===null, 'btn-info':question.selected!==null}">
+						
+						<span ng-class="{'glyphicon-question-sign':question.selected==null, 'glyphicon-pencil':question.selected!==null}"></span>
+
+					</button>
+				</span>
+
+			</div>
+
+			<div class="col-md-4">
+					<!-- <button class="btn btn-primary pull-right" ng-click="quizFactory.increment()">Next</button>
+								 -->
+					
+					<h3>Legend:</h3>
+					<div class="row">
+										
+						<div class="col-md-4">
+							<button class="btn btn-danger">
+								<span class="glyphicon glyphicon-question-sign"></span>
+							</button> 
+							<p>Unanswered</p>
+						</div>
+						<div class="col-md-4">
+							<button class="btn btn-info">
+								<span class="glyphicon glyphicon-pencil"></span>
+							</button> 
+							<p>Answered</p>
+						</div>
+					</div>
+			</div>
+
+		</div>
+
+
+		<div class="row">
+			<div class="col-md-12" ng-hide="finalized">
+
+				<div class="alert alert-danger"
+					ng-show="errors==true">
+					Error! You haven't answered all the questions.
+					<button class="close" ng-click="errors=false">&times;</button>
+				</div>
+
+				<h3>Question:</h3>
+				<div class="well well-lg margin-top">
+					<h4><span>{{quizFactory.quizNumber}}. </span> {{questions[quizFactory.quizNumber-1].text}} </h4>
+
+					<div class="row">
+						<div class="col-md-6" ng-repeat="possibilty in questions[quizFactory.quizNumber-1].possibilities">
+							<div class="answer" ng-class="{'bg-info': $index == questions[quizFactory.quizNumber-1].selected}" ng-click="selectAnswer($index)">
+								
+								<span ng-if="isText(questions[quizFactory.quizNumber-1])">{{possibilty.answer}}</span> 
+								<img class="img-responsive" ng-if="isImg(questions[quizFactory.quizNumber-1])" ng-src={{possibilty.answer}}>
+							</div>
+						</div>
+					</div>
+
+					<button class="btn btn-warning" ng-click="increment()">Next</button>
+				</div>
+
+			</div>
+		
+
+		</div>
+
+
+		<div class="well well-sm" ng-show="finalized">
+				<h3>Are you sure you want to end the quiz?<h3>
+				
+				<button class="btn btn-success" ng-click="finalizeAnswers()">Yes</button>
+				<button class="btn btn-danger" ng-click="finalized=false">No</button>
+		</div>
+
+		
+    </div>
+    
+
+	<div class="container">
+	    <div ng-controller="ResultsController" ng-show="metricsFactory.resultsActive">
+			
+			<div class="row">
+			
+						
+				<div class="col-md-8">
+					<h3>Result</h3>	
+					<span ng-repeat="question in questions" ng-click="setQuizNum($index)">
+						<button class="btn ques_ans-btn glyphicon" ng-class="{'btn-danger': question.correct===false, 'btn-success':question.correct===true}">
+							
+							<span ng-class="{'glyphicon-ok':question.correct===true, 'glyphicon-remove':question.correct===false}"></span>
+
+						</button>
+					</span>
+
+				</div>
+
+				<div class="col-md-4">
+						
+						<h3>Legend:</h3>
+						<div class="row">
+											
+							<div class="col-md-4">
+								<button class="btn btn-danger">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button> 
+								<p>Wrong Answer</p>
+							</div>
+							<div class="col-md-4">
+								<button class="btn btn-success">
+									<span class="glyphicon glyphicon-ok"></span>
+								</button> 
+								<p>Correct Answer</p>
+							</div>
+						</div>
+				</div>
+
+			</div> <!-- .row -->
+
+
+			<div class="row">
+				<div class="col-xs-12">
+						<h4>You scored {{metricsFactory.correct}} / {{quizFactory.questions.length}}</h4>
+						<h3>{{calculatePerc()}} %</h3>
+				</div>
+			</div>
+
+
+			<div class="row">
+				<div class="col-md-12">
+
+					<!-- <div class="alert alert-danger"
+						ng-show="errors==true">
+						Error! You haven't answered all the questions.
+						<button class="close" ng-click="errors=false">&times;</button>
+					</div> -->
+
+					<h3>Your Answers:</h3>
+					<div class="well well-lg margin-top">
+						<h4><span>{{activeQuiz+1}}. </span> {{quizFactory.questions[activeQuiz].text}} </h4>
+
+						<div class="row">
+							<div class="col-md-6" ng-repeat="possibilty in quizFactory.questions[activeQuiz].possibilities">
+								<div class="answer" ng-class="{'bg-success': $index === quizFactory.correctAnswers[activeQuiz], 'bg-danger': $index === quizFactory.questions[activeQuiz].selected && $index != quizFactory.correctAnswers[activeQuiz] }" >
+									
+									<span ng-if="isText(quizFactory.questions[activeQuiz])">
+										{{possibilty.answer}}
+
+										<span bg="bg-danger pull-right" ng-show="$index !== quizFactory.correctAnswers[activeQuiz] && $index === quizFactory.questions[activeQuiz].selected"><b>Your answer</b></span>
+										<span bg="bg-success pull-right" ng-show="$index === quizFactory.correctAnswers[activeQuiz]"><b>Correct</b></span>
+									</span> 
+									<img class="img-responsive" ng-if="isImg(quizFactory.questions[activeQuiz])" ng-src={{possibilty.answer}}>
+								</div>
+							</div>
+						</div>
+
+						<!-- <button class="btn btn-warning" ng-click="increment()">Next</button> -->
+					</div>
+
+				</div>
+		
+
+				<button class="btn btn-primary" ng-click="reset()">Go Back To Facts</button>
+
+			</div> <!-- .answers -->
+		
+
+		</div> <!-- .controller -->   
+	</div><!-- .row -->
+
+
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/factories.js"></script>
+    <script src="scripts/controllers.js"></script>
+	
+</body>
+
+</html>

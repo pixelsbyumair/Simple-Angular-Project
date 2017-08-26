@@ -1,0 +1,15 @@
+.ques_ans-btn {
+	margin-right: 10px;
+}
+
+.margin-top {
+	margin-top: 20px;
+}
+
+.answer {
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	padding: 10px;
+	margin-bottom: 15px;
+	cursor: pointer;
+}
