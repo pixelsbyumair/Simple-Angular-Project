@@ -1,0 +1,27 @@
+{
+	"services": [
+		
+		{
+			"id": 1,
+			"name": "Web Design",
+			"description": "Building on a rock solid foundation, our websites get your business results. From phones to laptops, your brand deserves the best online representation.",
+			"image": "images/services/1.jpg"
+		},
+
+
+		{
+			"id": 2,
+			"name": "Illustrations & Animations",
+			"description": "Illustrations and animations add a different level to your brands communication. Work with us on an animation or illustration project to further develop your brand.",
+			"image": "images/services/2.jpg"
+		},
+
+		{
+			"id": 3,
+			"name": "Logo Design",
+			"description": "Your brand is your business and we love building brands. Work with us to grow your brand beyond the screen, sharing every success along the way.",
+			"image": "images/services/3.jpg"
+		}
+
+	]
+}

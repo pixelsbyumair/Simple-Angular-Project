@@ -1,4 +1,4 @@
-var app = angular.module('designApp', ['ui.router']).config(function($stateProvider, $urlRouterProvider) {
+var app = angular.module('designApp', ['ui.router', 'ngResource']).config(function($stateProvider, $urlRouterProvider) {
 
 
 	$stateProvider.state('app', {

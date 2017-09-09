@@ -4,19 +4,24 @@
         <h1>Contact Us</h1>
 
         <div class="col-md-4">
-  
-          <br >
 
-          <p>+92-1234567890</p>
-          <p>abc@example.com</p>
-          <p>
-            <strong>ABC Company</strong>
-            28 Kensington street <br >
-            Brighton <br >
-            East Sussex <br >
-            BN1 4AJ<br >
-            United Kingdom<br >
-          </p>
+          
+         
+          <div class="row">
+            <div ng-repeat="office in offices">
+              <div class="col-md-12">
+        
+                <br >
+                <h3>Office {{$index+1}}</h3>
+
+                <p>{{office.phone}}</p>
+                <p>{{office.email}}</p>
+                <p>
+                  {{office.address}}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="col-md-8">
